@@ -61,5 +61,7 @@ class Visualizer:
         elif (angular_velocity < -0.5): angular_velocity = -0.5
         print(angular_velocity)
 
+        return angular_velocity
+
         # angular_velocity を publish
         # sankou : http://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/Twist.html
