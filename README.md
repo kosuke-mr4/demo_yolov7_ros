@@ -17,19 +17,12 @@ Install `docker`, `docker-compose`, `nvidia-docker` (i.e., `nvidia-container-too
 
 
 ```bash
-$ git clone --recurse-submodules https://github.com/mit-acl/yolov7_ros # get YOLOv7 submodule
-$ cd yolov7_ros
+$ git clone --recurse-submodules https://github.com/kosuke-mr4/demo_yolov7_ros # get YOLOv7 submodule
+$ cd demo_yolov7_ros
 $ docker compose build
 $ docker compose up
 ```
 
-## Running inside a namespace
-
-You can use `docker compose run` to set the `ROS_NAMESPACE` environment variable:
-
-```bash
-docker compose run -e ROS_NAMESPACE=robot/camera yolov7_ros roslaunch yolov7_ros detect.launch
-```
 
 ## Webcam demo
 
@@ -38,8 +31,8 @@ docker compose run -e ROS_NAMESPACE=robot/camera yolov7_ros roslaunch yolov7_ros
 2. Start a `roscore`.
 3. Start the USB camera (with remapping): `rosrun usb_cam usb_cam_node usb_cam/image_raw:=image_raw`．この際 `unable to decode APP fields: Invalid data found when processing input` という表示が出ますが問題ないです．
 4. Start `yolov7_ros` via `docker compose up`
-5. コンテナ内で `Rviz`　を起動します．再インストールが必要との旨のエラーが出た場合は，ホストPCで`xhost +local:docker`を行ってから再度試してください．
-6. Rvizから add -> by topic -> image_dets/Image で推定結果を追加した映像を確認できます．
+5. コンテナ内で `Rviz`　を起動します(なければインストール) ．再インストールが必要との旨のエラーが出た場合は，ホストPCで`xhost +local:docker`を行ってから再度試してください．
+7. Rvizから add -> by topic -> image_dets/Image で推定結果を追加した映像を確認できます．
 
 
 ### Credits
