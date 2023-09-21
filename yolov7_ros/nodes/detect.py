@@ -57,11 +57,11 @@ class Detector:
         detmsg.header = msg.header
         self.pub_dets.publish(detmsg)
 
-        if self.pub_img_out.get_num_connections() > 0:
-            self.viz.draw_2d_bboxes(frame, detections)
-            out = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
-            out.header = msg.header
-            self.pub_img_out.publish(out)
+        # if self.pub_img_out.get_num_connections() > 0:
+        self.viz.draw_2d_bboxes(frame, detections)
+        out = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
+        out.header = msg.header
+        self.pub_img_out.publish(out)
 
 
 if __name__ == "__main__":

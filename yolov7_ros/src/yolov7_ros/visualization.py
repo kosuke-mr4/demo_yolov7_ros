@@ -55,7 +55,7 @@ class Visualizer:
         if(left_area > right_area):
             angular_velocity = left_area / right_area / 10
         elif(left_area < right_area):
-            angular_velocity = right_area / left_area / 10
+            angular_velocity = right_area / left_area / 10 * (-1)
 
         if (angular_velocity > 0.5): angular_velocity = 0.5
         elif (angular_velocity < -0.5): angular_velocity = -0.5
