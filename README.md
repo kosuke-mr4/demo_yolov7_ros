@@ -1,6 +1,8 @@
 YOLOv7 ROS with Docker
 ======================
 
+MRK : Webcam demo に追記
+
 This ROS package wraps the [Official YOLOv7](https://github.com/WongKinYiu/yolov7) repo. Further, [`nvidia-docker`](https://github.com/NVIDIA/nvidia-docker) is used to build an image with all the necessary YOLOv7 dependencies. Then, [`docker compose`](https://docs.docker.com/compose/install/) can be used to create a container to launch a ROS node. Note that the `docker-compose.yml` file shares the container network with the host network---thus, the node will be able to communicate with other ROS nodes on the host machine.
 
 **Tested on:**
@@ -31,10 +33,13 @@ docker compose run -e ROS_NAMESPACE=robot/camera yolov7_ros roslaunch yolov7_ros
 
 ## Webcam demo
 
+0. ホストPCにROS Noeticをインストールします
 1. Install your favorite ROS web camera package. We will use [`usb_cam`](http://wiki.ros.org/usb_cam): `sudo apt install ros-noetic-usb-cam`.
 2. Start a `roscore`.
-3. Start the USB camera (with remapping): `rosrun usb_cam usb_cam_node usb_cam/image_raw:=image_raw`
+3. Start the USB camera (with remapping): `rosrun usb_cam usb_cam_node usb_cam/image_raw:=image_raw`．この際 `unable to decode APP fields: Invalid data found when processing input` という表示が出ますが問題ないです．
 4. Start `yolov7_ros` via `docker compose up`
+5. コンテナ内で `Rviz`　を起動します．再インストールが必要との旨のエラーが出た場合は，ホストPCで`xhost +local:docker`を行ってから再度試してください．
+6. Rvizから add -> by topic -> image_dets/Image で推定結果を追加した映像を確認できます．
 
 
 ### Credits
