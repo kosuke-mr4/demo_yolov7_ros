@@ -27,6 +27,9 @@ class Visualizer:
 
         right_area = 1
         left_area = 1
+        dist = 0
+        area_ratio = 0.0
+        num = len(dets)
         for det in dets:
             *xyxy, conf, cls = det
             label = f'{self.__names[int(cls)]} {conf:.2f}'
@@ -41,6 +44,9 @@ class Visualizer:
                 x2 = xyxy[2]
                 y1 = xyxy[1]
                 y2 = xyxy[3]
+
+                dist = dist - (WIDTH - (x1 + x2) ) / 2 / num
+                area_ratio = ((x2-x1) * (y2-y1) / num) / (WIDTH * HEIGHT / 2)
                 
                 if(x1 < WIDTH/2):
                     x2 = 320
@@ -52,16 +58,22 @@ class Visualizer:
                             line_thickness=self.__line_thickness)
         
         angular_velocity = 0
+        velocity = 0.0
         if(left_area > right_area):
             angular_velocity = left_area / right_area / 10
         elif(left_area < right_area):
             angular_velocity = right_area / left_area / 10 * (-1)
 
-        if (angular_velocity > 0.5): angular_velocity = 0.5
-        elif (angular_velocity < -0.5): angular_velocity = -0.5
+        angular_velocity = dist / (WIDTH / 2) * 0.7
+
+
+        if (angular_velocity > 0.7): angular_velocity = 0.7
+        elif (angular_velocity < -0.7): angular_velocity = -0.7
         print(angular_velocity)
 
-        return angular_velocity
+        velocity = min(0.65, area_ratio * 0.8)
+
+        return (angular_velocity, velocity)
 
         # angular_velocity を publish
         # sankou : http://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/Twist.html

@@ -9,7 +9,9 @@ import cv2 as cv
 import cv_bridge
 
 import sensor_msgs.msg as sensor_msgs
+from std_msgs.msg import String
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistStamped
 import vision_msgs.msg as vision_msgs
 
 from yolov7_ros.wrapper import YoloV7
@@ -47,7 +49,9 @@ class Detector:
         # ROS communication
         self.sub_img_in = rospy.Subscriber('image_raw', sensor_msgs.Image, self.img_cb)
         self.pub_img_out = rospy.Publisher('image_dets', sensor_msgs.Image, queue_size=10)
+        self.pub_angular = rospy.Publisher('angular', String, queue_size=10)
         self.pub_vel_tmp = rospy.Publisher('vel_temp', Twist, queue_size=10)
+        self.pub_twist_stamped = rospy.Publisher('twist_stamped', TwistStamped, queue_size=10)
         self.pub_dets = rospy.Publisher('detections', vision_msgs.Detection2DArray, queue_size=10)
 
     def img_cb(self, msg):
@@ -60,14 +64,24 @@ class Detector:
         self.pub_dets.publish(detmsg)
 
         # if self.pub_img_out.get_num_connections() > 0:
+        angular = String()
         vel_tmp = Twist()
-        angular_z = self.viz.draw_2d_bboxes(frame, detections)
-        vel_tmp.linear.x = 0.1
+        twist_stamped = TwistStamped()
+        (angular_z, velocity) = self.viz.draw_2d_bboxes(frame, detections)
+        angular.data = "angular.z:" + str(angular_z)
+        vel_tmp.linear.x = velocity
         vel_tmp.angular.z = angular_z
+        twist_stamped.twist = vel_tmp
+        twist_stamped.header.frame_id ="map"
+        twist_stamped.header.stamp = rospy.Time.now()
         out = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
         out.header = msg.header
+
+        # publish
         self.pub_img_out.publish(out)
         self.pub_vel_tmp.publish(vel_tmp)
+        self.pub_twist_stamped.publish(twist_stamped)
+        self.pub_angular.publish(angular)
 
 
 if __name__ == "__main__":
