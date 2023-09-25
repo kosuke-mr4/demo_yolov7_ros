@@ -13,4 +13,6 @@
     <param name="iou_threshold" value="$(arg iou_threshold)" />
     <param name="device" value="$(arg device)" />
   </node>
+
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find yolov7_ros)/config/demo.rviz"/>
 </launch>
